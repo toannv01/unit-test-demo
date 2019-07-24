@@ -1,77 +1,44 @@
-import { LoginComponent } from './login.component';
+import {TestBed, async, ComponentFixture} from '@angular/core/testing';
+import {LoginComponent} from './login.component';
+import {DebugElement} from '@angular/core';
+import {By} from '@angular/platform-browser';
 import { AuthUserService } from '../authentication.service';
 
-// fake classes
+describe('Component: Login', () => {
 
-// class MockAuthService {
-//   authenticated = false;
-//   isAuthenticated() {
-//     return this.authenticated;
-//   }
-//  }
-
-
-// ghi đè functions
-
-// class MockAuthService extends AuthUserService {
-//   authenticated = false;
-
-//   isAuthenticated() {
-//     return this.authenticated;
-//   }
-// }
-describe('LoginComponent', () => {
   let component: LoginComponent;
-  let service: AuthUserService;
-  // let service: MockAuthService;
+  let fixture: ComponentFixture<LoginComponent>;
+  let authService: AuthUserService;
+  let el: DebugElement;
 
   beforeEach(() => {
-    service = new AuthUserService();
-    // service = new MockAuthService();
-    component = new LoginComponent(service);
+
+    // refine the test module by declaring the test component
+    TestBed.configureTestingModule({
+      declarations: [LoginComponent],
+      providers: [AuthUserService]
+    });
+
+    // create component and test fixture
+    fixture = TestBed.createComponent(LoginComponent);
+
+    // get test component from the fixture
+    component = fixture.componentInstance;
+
+    // UserService provided to the TestBed
+    authService = TestBed.get(AuthUserService);
+
+    //  get the "a" element by CSS selector (e.g., by class name)
+    el = fixture.debugElement.query(By.css('a'));
   });
 
-  afterEach(() => {
-    // localStorage.removeItem('token');
-    service = null;
-    component = null;
-  });
-
-
-  // it('needsLogin returns false when the user is not authenticated', () => {
-  //   expect(component.needsLogin()).toBeTruthy();
-  // });
-
-  // it('needsLogin returns false when the user is not authenticated', () => {
-  //   localStorage.setItem('token', '12345');
-  //   expect(component.needsLogin()).toBeFalsy();
-  // });
-
-
-// // Sử dụng mock
-
-//   it('isLoggedIn returns true when the user is authenticated', () => {
-//     localStorage.setItem('token', '12345');
-//     service.authenticated = true;
-//     expect(component.isLoggedIn()).toBeTruthy();
-//   });
-
-//   it('isLoggedIn returns false when the user is not authenticated', () => {
-//     service.authenticated = false;
-//     expect(component.isLoggedIn()).toBeFalsy();
-//   });
-
-
-  // Sử dụng spy
-  it('needsLogin returns false when the user is not authenticated', () => {
-    spyOn(service, 'isAuthenticated').and.returnValue(false);
-    expect(component.needsLogin()).toBeTruthy();
-    expect(service.isAuthenticated).toHaveBeenCalled();
-  });
-
-  it('needsLogin returns false when the user is not authenticated', () => {
-    spyOn(service, 'isAuthenticated').and.returnValue(true);
-    expect(component.needsLogin()).toBeFalsy();
-    expect(service.isAuthenticated).toHaveBeenCalled();
+  it('nút đăng nhập bị ẩn khi người dùng được xác thực', () => {
+    expect(el.nativeElement.textContent.trim()).toBe('');
+    fixture.detectChanges();
+    expect(el.nativeElement.textContent.trim()).toBe('Login');
+    spyOn(authService, 'isAuthenticated').and.returnValue(true);
+    expect(el.nativeElement.textContent.trim()).toBe('Login');
+    fixture.detectChanges();
+    expect(el.nativeElement.textContent.trim()).toBe('Logout');
   });
 });

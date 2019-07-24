@@ -3,8 +3,11 @@ import { AuthUserService } from '../authentication.service';
 
 @Component({
  selector: 'app-login',
- template: `<a [hidden]="isLoggedIn()">Login</a><br>
- <a [hidden]="needsLogin()">Login</a>
+ template: `
+  <a>
+    <span *ngIf="needsLogin()">Login</span>
+    <span *ngIf="!needsLogin()">Logout</span>
+  </a>
  `
 })
 export class LoginComponent {
@@ -12,9 +15,9 @@ export class LoginComponent {
  constructor(private authService: AuthUserService) {
  }
 
- isLoggedIn() {
-   return this.authService.isAuthenticated();
- }
+//  isLoggedIn() {
+//    return this.authService.isAuthenticated();
+//  }
  needsLogin() {
   return !this.authService.isAuthenticated();
  }
